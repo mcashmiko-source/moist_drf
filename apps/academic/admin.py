@@ -161,7 +161,7 @@ class ModuleAdmin(admin.ModelAdmin):
         url = reverse('admin:module_view', args=[obj.id])
         return format_html(
             '<a href="{}" class="button" style="background: #17a2b8; color: white; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-weight: 600;">'
-            '📖 View Module'
+            '📖 View Content'
             '</a>',
             url
         )
