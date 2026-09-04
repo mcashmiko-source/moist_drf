@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Import CSV</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .container { background: #f9f9f9; padding: 30px; border-radius: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="file"], input[type="checkbox"] { margin-top: 5px; }
+        .help-text { color: #666; font-size: 0.9em; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .alert { padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Import Library Catalog</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.csv_file.label_tag }}
+                {{ form.csv_file }}
+                <span class="help-text">{{ form.csv_file.help_text }}</span>
+                {% if form.csv_file.errors %}
+                    <div class="alert alert-error">{{ form.csv_file.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.update_existing.label_tag }}
+                {{ form.update_existing }}
+                <span class="help-text">{{ form.update_existing.help_text }}</span>
+            </div>
+            
+            <div class="form-group">
+                {{ form.skip_header.label_tag }}
+                {{ form.skip_header }}
+                <span class="help-text">{{ form.skip_header.help_text }}</span>
+            </div>
+            
+            <button type="submit" class="btn">Import CSV</button>
+            <a href="" style="margin-left: 10px;">Cancel</a>
+        </form>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 5px;">
+            <h3>📋 CSV Format Requirements</h3>
+            <p>Your CSV should include these columns (at minimum):</p>
+            <ul>
+                <li><strong>control_no</strong> - Unique identifier (required)</li>
+                <li><strong>title_statement</strong> - Title of the work</li>
+                <li><strong>main_author</strong> - Main author</li>
+                <li><strong>call_number</strong> - Library call number</li>
+                <li><strong>isbn</strong> - ISBN (optional)</li>
+            </ul>
+            <p><a href="" target="_blank">📥 Download Sample CSV</a></p>
+        </div>
+    </div>
+</body>
+</html>

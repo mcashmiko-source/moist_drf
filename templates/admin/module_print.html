@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | MOIST LMS</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 15px;
+            background: white;
+            color: #333;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .module-print-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+            background: white;
+        }
+        
+        /* Page Break */
+        .page-break {
+            page-break-after: always;
+            border-bottom: 2px dashed #ccc;
+            margin: 20px 0;
+            padding-bottom: 20px;
+        }
+        
+        .page-break:last-child {
+            border-bottom: none;
+            page-break-after: auto;
+        }
+        
+        /* Blank Page */
+        .blank-page {
+            min-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .blank-page .blank-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .blank-page .blank-content .seal {
+            margin-bottom: 30px;
+        }
+        
+        .blank-page .blank-content .seal img {
+            max-height: 150px;
+            width: auto;
+        }
+        
+        .blank-page .blank-content h2 {
+            font-size: 24px;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+        
+        .blank-page .blank-content p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            line-height: 1.6;
+        }
+        
+        .blank-page .blank-content .divider {
+            width: 80px;
+            height: 2px;
+            background: #1a237e;
+            margin: 20px auto;
+        }
+        
+        .blank-page .blank-content .notes {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #1a237e;
+            text-align: left;
+        }
+        
+        .blank-page .blank-content .notes p {
+            font-size: 12px;
+            color: #555;
+            margin: 5px 0;
+        }
+        
+        .blank-page .blank-content .notes strong {
+            color: #1a237e;
+        }
+        
+        /* Header */
+        .print-header {
+            text-align: center;
+            border-bottom: 2px solid #1a237e;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .header-logos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .header-logos .logo-left,
+        .header-logos .logo-right {
+            flex: 0 0 70px;
+        }
+        
+        .header-logos .logo-left img,
+        .header-logos .logo-right img {
+            max-height: 60px;
+            width: auto;
+        }
+        
+        .header-logos .logo-center {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .header-logos .logo-center .institution {
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        
+        .header-logos .logo-center h1 {
+            font-size: 18px;
+            color: #1a237e;
+            margin: 2px 0;
+            font-weight: 700;
+        }
+        
+        .header-logos .logo-center h2 {
+            font-size: 15px;
+            color: #333;
+            margin: 2px 0;
+            font-weight: 400;
+        }
+        
+        .header-logos .logo-center .subtitle {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 3px 20px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #1a237e;
+        }
+        
+        .info-grid p {
+            margin: 2px 0;
+            font-size: 11px;
+            color: #333;
+        }
+        
+        .info-grid strong {
+            color: #1a237e;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .status-badge.published { background: #d4edda; color: #155724; }
+        .status-badge.unpublished { background: #f8d7da; color: #721c24; }
+        .status-badge.completed { background: #d4edda; color: #155724; }
+        .status-badge.inprogress { background: #fff3cd; color: #856404; }
+        
+        /* Sections */
+        .section {
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+        
+        .section h3 {
+            font-size: 13px;
+            color: #1a237e;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .section .content {
+            padding-left: 5px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        .section .content p {
+            margin: 2px 0;
+        }
+        
+        .print-footer {
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+            margin-top: 15px;
+        }
+        
+        .print-actions {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .print-actions .btn {
+            padding: 6px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        
+        .print-actions .btn-print {
+            background: #1a237e;
+            color: white;
+        }
+        
+        .print-actions .btn-print:hover {
+            background: #0d47a1;
+            transform: translateY(-2px);
+        }
+        
+        .print-actions .btn-close {
+            background: #6c757d;
+            color: white;
+            margin-left: 8px;
+        }
+        
+        .print-actions .btn-close:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        /* Print */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .page-break {
+                border-bottom: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                page-break-after: always !important;
+            }
+            
+            .blank-page {
+                min-height: 100vh !important;
+                padding: 60px 20px !important;
+                justify-content: center !important;
+            }
+            
+            body {
+                padding: 10px !important;
+                margin: 0 !important;
+                background: white !important;
+                font-size: 10px !important;
+            }
+            
+            .module-print-container {
+                padding: 10px !important;
+                max-width: 100% !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+            }
+            
+            .print-actions, .btn, .no-print {
+                display: none !important;
+            }
+            
+            .header-logos .logo-left,
+            .header-logos .logo-right {
+                flex: 0 0 60px !important;
+            }
+            
+            .header-logos .logo-left img,
+            .header-logos .logo-right img {
+                max-height: 50px !important;
+            }
+            
+            .header-logos .logo-center h1 {
+                font-size: 16px !important;
+            }
+            
+            .header-logos .logo-center h2 {
+                font-size: 13px !important;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr 1fr 1fr !important;
+                gap: 2px 15px !important;
+                padding: 6px 10px !important;
+            }
+            
+            .info-grid p {
+                font-size: 10px !important;
+            }
+            
+            .section h3 {
+                font-size: 12px !important;
+            }
+            
+            .section .content {
+                font-size: 10px !important;
+            }
+            
+            .print-footer {
+                font-size: 9px !important;
+            }
+            
+            .blank-page .blank-content .seal img {
+                max-height: 120px !important;
+            }
+            
+            .blank-page .blank-content h2 {
+                font-size: 20px !important;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .module-print-container {
+                padding: 10px;
+            }
+            
+            .header-logos {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .header-logos .logo-left,
+            .header-logos .logo-right {
+                flex: 0 0 auto;
+            }
+            
+            .header-logos .logo-left img,
+            .header-logos .logo-right img {
+                max-height: 45px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 2px 15px;
+            }
+            
+            .print-header h1 {
+                font-size: 16px;
+            }
+            
+            .print-header h2 {
+                font-size: 13px;
+            }
+            
+            .print-actions .btn {
+                width: 100%;
+                margin: 3px 0;
+            }
+            
+            .print-actions .btn-close {
+                margin-left: 0;
+            }
+            
+            .blank-page {
+                padding: 20px;
+            }
+            
+            .blank-page .blank-content .seal img {
+                max-height: 100px;
+            }
+            
+            .blank-page .blank-content h2 {
+                font-size: 20px;
+            }
+        }
+        
+        /* Print specific - keep logos left/right on mobile too */
+        @media print and (max-width: 768px) {
+            .header-logos {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+            }
+            
+            .header-logos .logo-left,
+            .header-logos .logo-right {
+                flex: 0 0 50px !important;
+            }
+            
+            .header-logos .logo-left img,
+            .header-logos .logo-right img {
+                max-height: 40px !important;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr 1fr 1fr !important;
+            }
+        }
+    </style>
+</head>
+<body onload="print()">
+    <div class="module-print-container">
+        <!-- ========== PAGE 1: MAIN CONTENT ========== -->
+        <!-- Header -->
+        <div class="print-header">
+            <div class="header-logos">
+                <div class="logo-left">
+                    <img src="{% static 'admin/img/school_logo.jpg' %}" alt="School Logo" />
+                </div>
+                <div class="logo-center">
+                    <h1>{{ subject.subject_code }} - {{ subject.subject_name }}</h1>
+                    <h2>Module {{ module.module_number }}: {{ module.module_title }}</h2>
+                    <div class="subtitle">AY: {{ syllabus.school_year }} - 2027</div>
+                </div>
+                <div class="logo-right">
+                    <img src="{% static 'admin/img/bsit.png' %}" alt="Department Logo" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div class="info-grid">
+            <p><strong>Type:</strong> {{ module.module_type }}</p>
+            <p><strong>Week:</strong> {{ module.week_number }}</p>
+            {% if module.week_title %}
+            <p><strong>Week Title:</strong> {{ module.week_title }}</p>
+            {% endif %}
+            <p><strong>Duration:</strong> {{ module.duration|default:"Not specified" }}</p>
+            <p><strong>Instructor:</strong> {{ syllabus.instructor_name|default:"Not assigned" }}</p>
+            <p>
+                <strong>Status:</strong>
+                {% if module.is_published %}
+                    <span class="status-badge published">Published</span>
+                {% else %}
+                    <span class="status-badge unpublished">Unpublished</span>
+                {% endif %}
+                {% if module.is_completed %}
+                    <span class="status-badge completed">Completed</span>
+                {% else %}
+                    <span class="status-badge inprogress">In Progress</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Topics -->
+        <div class="section">
+            <h3>Topics</h3>
+            <div class="content">{{ module.topics|linebreaks }}</div>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="section">
+            <h3>Learning Objectives</h3>
+            <div class="content">{{ module.learning_objectives|linebreaks }}</div>
+        </div>
+
+        <!-- Learning Outcomes -->
+        {% if module.learning_outcomes %}
+        <div class="section">
+            <h3>Learning Outcomes</h3>
+            <div class="content">{{ module.learning_outcomes|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Activities -->
+        {% if module.activities %}
+        <div class="section">
+            <h3>Activities</h3>
+            <div class="content">{{ module.activities|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Assignments -->
+        {% if module.assignments %}
+        <div class="section">
+            <h3>Assignments</h3>
+            <div class="content">{{ module.assignments|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Resources -->
+        {% if module.resources %}
+        <div class="section">
+            <h3>Resources</h3>
+            <div class="content">{{ module.resources|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- References -->
+        {% if module.references %}
+        <div class="section">
+            <h3>References</h3>
+            <div class="content">{{ module.references|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Assessments -->
+        {% if module.assessments %}
+        <div class="section">
+            <h3>Assessments</h3>
+            <div class="content">{{ module.assessments|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <div class="print-footer">
+            <span>MOIST LMS</span>
+            <span style="margin: 0 8px; color: #ddd;">|</span>
+            <span>{{ module.created_at|date:"F d, Y" }}</span>
+            <span style="margin: 0 8px; color: #ddd;">|</span>
+            <span>Page 1</span>
+        </div>
+
+
+        <!-- ========== PAGE BREAK ========== -->
+        <div class="page-break"></div>
+
+        <!-- ========== PAGE 3: MAIN CONTENT REPEAT (Optional) ========== -->
+        <!-- Header -->
+        <div class="print-header">
+            <div class="header-logos">
+                <div class="logo-left">
+                    <img src="{% static 'admin/img/school_logo.jpg' %}" alt="School Logo" />
+                </div>
+                <div class="logo-center">
+                    <h1>{{ subject.subject_code }} - {{ subject.subject_name }}</h1>
+                    <h2>Module {{ module.module_number }}: {{ module.module_title }}</h2>
+                    <div class="subtitle">AY: {{ syllabus.school_year }} - 2027</div>
+                </div>
+                <div class="logo-right">
+                    <img src="{% static 'admin/img/bsit.png' %}" alt="Department Logo" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Lessons & Discussions -->
+        {% if module.lessons %}
+        <div class="section">
+            <h3>Lessons & Discussions</h3>
+            <div class="content">{{ module.lessons|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="print-actions no-print">
+            <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+            <a class="btn btn-close" href="{% url 'admin:index' %}">✖ Close</a>
+        </div>
+    </div>
+</body>
+</html>
