@@ -42,7 +42,50 @@ INSTALLED_APPS = [
     'apps.academic',
 
 ]
-
+# Jazzmin Settings
+JAZZMIN_SETTINGS = {
+    # Title of the admin (will be displayed on the login screen and admin header)
+    "site_title": "MOIST LMS Admin",
+    
+    # Title on the brand (will be displayed on the admin header)
+    "site_header": "MOIST LMS",
+    
+    # Logo to use for your site, must be present in static files (default: False)
+    "site_logo": "admin/img/moist1.png",
+    
+    # Logo to use for your site in the login form (default: False)
+    "login_logo": "admin/img/moist1.png",
+    
+    # Logo to use for your site in the login form (default: False)
+    "login_logo_dark": "admin/img/moist1.png",
+    
+    # CSS classes that are applied to the logo (default: None)
+    "site_logo_classes": "img-circle",
+    
+    # Relative path to a favicon for your site (default: False)
+    "site_icon": "admin/img/favicon.ico",
+    
+    # Welcome text on the login screen
+    "welcome_sign": "Welcome to MOIST LMS",
+    
+    # Copyright on the footer
+    "copyright": "MOIST LMS © 2024",
+    
+    
+    # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
+    "order_with_respect_to": ["library", "academic", "auth"],
+    
+    # Custom links to append to app groups, keyed on app name
+    "custom_links": {
+        "library": [{
+            "name": "Make Reports",
+            "url": "make_reports",
+            "icon": "fas fa-chart-pie",
+            "permissions": ["library.view_librarycatalog"]
+        }]
+    },
+    
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
