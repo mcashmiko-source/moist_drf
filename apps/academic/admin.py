@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .models import Subject, Syllabus, Module
 
-# asd
+
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = (
