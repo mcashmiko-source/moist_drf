@@ -475,11 +475,6 @@
             <p><strong>Instructor:</strong> {{ syllabus.instructor_name|default:"Not assigned" }}</p>
             <p>
                 <strong>Status:</strong>
-                {% if module.is_published %}
-                    <span class="status-badge published">Published</span>
-                {% else %}
-                    <span class="status-badge unpublished">Unpublished</span>
-                {% endif %}
                 {% if module.is_completed %}
                     <span class="status-badge completed">Completed</span>
                 {% else %}
@@ -586,6 +581,16 @@
             <div class="content">{{ module.lessons|linebreaks }}</div>
         </div>
         {% endif %}
+
+        <!-- Footer -->
+        <div class="print-footer">
+            <span>MOIST LMS</span>
+            <span style="margin: 0 8px; color: #ddd;">|</span>
+            <span>{{ module.created_at|date:"F d, Y" }}</span>
+            <span style="margin: 0 8px; color: #ddd;">|</span>
+            <span>Page 2</span>
+        </div>
+
 
         <!-- Actions -->
         <div class="print-actions no-print">
